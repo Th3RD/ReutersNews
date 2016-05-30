@@ -6,6 +6,7 @@ using System.Text;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
+using System.Configuration;
 
 namespace ReutersNewsTest
 {
@@ -35,10 +36,10 @@ namespace ReutersNewsTest
 		[TestMethod]
 		public void MagicNews()
 		{
-			_driver.Navigate().GoToUrl("http://217.21.63.69/#/magic");
+			_driver.Navigate().GoToUrl(ConfigurationManager.AppSettings["MagicNewsUrl"]);
 			WaitForElement(_driver, By.CssSelector(".accordionitem.ng-scope"));
 			_driver.FindElement(By.CssSelector(".accordionitem.ng-scope")).Click();
-			_driver.FindElement(By.Id("uploadBtn")).SendKeys(Path.GetDirectoryName(Path.GetDirectoryName(Directory.GetCurrentDirectory())) + "\\test-file.xml");
+			_driver.FindElement(By.Id("uploadBtn")).SendKeys(Path.GetDirectoryName(Path.GetDirectoryName(Directory.GetCurrentDirectory())) + "\\" + ConfigurationManager.AppSettings["FileToUpload"]);
 			_driver.FindElement(By.CssSelector(".flex-item.submitbutton")).Click();
 
 			WaitForElement(_driver, By.XPath("//*[contains(@class, 'result-item repeated-item')]"));
@@ -51,10 +52,10 @@ namespace ReutersNewsTest
 		[TestMethod]
 		public void NewsMax()
 		{
-			_driver.Navigate().GoToUrl("http://217.21.63.69/#/newsmax");
+			_driver.Navigate().GoToUrl(ConfigurationManager.AppSettings["NewsMaxUrl"]);
 			WaitForElement(_driver, By.CssSelector(".accordionitem.V2.ng-scope"));
 			_driver.FindElement(By.CssSelector(".accordionitem.V2.ng-scope")).Click();
-			_driver.FindElement(By.Id("uploadBtn")).SendKeys(Path.GetDirectoryName(Path.GetDirectoryName(Directory.GetCurrentDirectory())) + "\\test-file.xml");
+			_driver.FindElement(By.Id("uploadBtn")).SendKeys(Path.GetDirectoryName(Path.GetDirectoryName(Directory.GetCurrentDirectory())) + "\\" + ConfigurationManager.AppSettings["FileToUpload"]);
 			_driver.FindElement(By.CssSelector(".flex-item.submitbutton")).Click();
 
 			WaitForElement(_driver, By.XPath("//*[contains(@class, 'result-item repeated-item')]"));
@@ -100,14 +101,18 @@ namespace ReutersNewsTest
 				Timeout = 10000,
 				DeliveryMethod = SmtpDeliveryMethod.Network,
 				UseDefaultCredentials = false,
-				Credentials = new System.Net.NetworkCredential("magicnewstest@gmail.com", "magicPassword")
+				Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["FromUsername"], ConfigurationManager.AppSettings["FromPassword"])
 			};
 
-			MailMessage mm = new MailMessage("hleb.haurylovich@gmail.com", "gleb_gavrilovich@epam.com", Subject, Result)
+			MailMessage mm = new MailMessage(ConfigurationManager.AppSettings["FromUsername"], "me@me.com", Subject, Result)
 			{
 				BodyEncoding = Encoding.UTF8,
 				DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure
 			};
+			foreach (var mail in ConfigurationManager.AppSettings["ToMails"].Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+			{
+				mm.To.Add(mail);
+			}
 
 			client.Send(mm);
 		}
