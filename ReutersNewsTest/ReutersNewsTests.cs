@@ -110,7 +110,7 @@ namespace ReutersNewsTest
 				Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["FromUsername"], ConfigurationManager.AppSettings["FromPassword"])
 			};
 
-			MailMessage mm = new MailMessage(ConfigurationManager.AppSettings["FromUsername"], "me@me.com", Subject, Result)
+			MailMessage mm = new MailMessage(ConfigurationManager.AppSettings["FromUsername"], "gleb_gavrilovich@epam.com", Subject, Result)
 			{
 				BodyEncoding = Encoding.UTF8,
 				DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure
