@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net.Mail;
 using System.Text;
@@ -20,7 +20,7 @@ namespace ReutersNewsTest
 		public TestContext TestContext { get; set; }
 		private static IWebDriver _driver;
 		#endregion
-		
+
 		#region Initializing
 		[TestFixtureSetUp]
 		public static void Init()
@@ -46,7 +46,17 @@ namespace ReutersNewsTest
 			var result = _driver.FindElement(By.XPath("//input[@name='range0']"));
 			var value = result.GetAttribute("value");
 
-			Assert.IsTrue(value.Equals("182 results"));
+			if (value.Equals("182 results"))
+			{
+				Result += "MagicNews test passed. Looks like everything works fine.\n";
+				Assert.IsTrue(true);
+			}
+			else
+			{
+				CommonPassed = false;
+				Result += "MagicNews test was failed. Possibly there is a problem. Please check it ASAP!!!\n";
+				Assert.IsTrue(false);
+			}
 		}
 
 		[Test]
@@ -62,25 +72,21 @@ namespace ReutersNewsTest
 			var result = _driver.FindElement(By.XPath("//input[@name='range0']"));
 			var value = result.GetAttribute("value");
 
-			Assert.IsTrue(value.Equals("182 results"));
+			if (value.Equals("182 results"))
+			{
+				Result += "NewsMax test passed. Looks like everything works fine.\n";
+				Assert.IsTrue(true);
+			}
+			else
+			{
+				CommonPassed = false;
+				Result += "NewsMax test was failed. Possibly there is a problem. Please check it ASAP!!!\n";
+				Assert.IsTrue(false);
+			}
 		}
 		#endregion
 
 		#region Cleanup
-		[TearDown]
-		public void CollectReport()
-		{
-			if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
-			{
-				CommonPassed = false;
-				Result += string.Format("{0} test was failed. Possibly there is a problem. Please check it ASAP!!!\n", TestContext.Test.Name);
-			}
-			else
-			{
-				Result += string.Format("{0} test passed. Looks like everything works fine.\n", TestContext.Test.Name);
-			}
-		}
-		
 		[TestFixtureTearDown]
 		public static void SendReport()
 		{
