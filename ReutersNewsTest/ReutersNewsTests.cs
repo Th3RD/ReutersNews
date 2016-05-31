@@ -70,7 +70,7 @@ namespace ReutersNewsTest
 		[TearDown]
 		public void CollectReport()
 		{
-			if (TestContext.Result.Status == TestStatus.Failed)
+			if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
 			{
 				CommonPassed = false;
 				Result += string.Format("{0} test was failed. Possibly there is a problem. Please check it ASAP!!!\n", TestContext.Test.Name);
