@@ -1,16 +1,16 @@
 ﻿using System;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net.Mail;
 using System.Text;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 using System.Configuration;
+using NUnit.Framework;
 
 namespace ReutersNewsTest
 {
-	[TestClass]
+	[TestFixture]
 	public class ReutersNewsTests
 	{
 		#region Fields & Properties
@@ -22,8 +22,8 @@ namespace ReutersNewsTest
 		#endregion
 		
 		#region Initializing
-		[ClassInitialize]
-		public static void Init(TestContext testContext)
+		[TestFixtureSetUp]
+		public static void Init()
 		{
 			_driver = new FirefoxDriver();
 			CommonPassed = true;
@@ -33,7 +33,7 @@ namespace ReutersNewsTest
 		#endregion
 
 		#region Tests
-		[TestMethod]
+		[Test]
 		public void MagicNews()
 		{
 			_driver.Navigate().GoToUrl(ConfigurationManager.AppSettings["MagicNewsUrl"]);
@@ -49,7 +49,7 @@ namespace ReutersNewsTest
 			Assert.IsTrue(value.Equals("182 results"));
 		}
 
-		[TestMethod]
+		[Test]
 		public void NewsMax()
 		{
 			_driver.Navigate().GoToUrl(ConfigurationManager.AppSettings["NewsMaxUrl"]);
@@ -67,21 +67,21 @@ namespace ReutersNewsTest
 		#endregion
 
 		#region Cleanup
-		[TestCleanup]
+		[TearDown]
 		public void CollectReport()
 		{
-			if (TestContext.CurrentTestOutcome == UnitTestOutcome.Failed)
+			if (TestContext.Result.Status == TestStatus.Failed)
 			{
 				CommonPassed = false;
-				Result += string.Format("{0} test was failed. Possibly there is a problem. Please check it ASAP!!!\n", TestContext.TestName);
+				Result += string.Format("{0} test was failed. Possibly there is a problem. Please check it ASAP!!!\n", TestContext.Test.Name);
 			}
 			else
 			{
-				Result += string.Format("{0} test passed. Looks like everything works fine.\n", TestContext.TestName);
+				Result += string.Format("{0} test passed. Looks like everything works fine.\n", TestContext.Test.Name);
 			}
 		}
 		
-		[ClassCleanup]
+		[TestFixtureTearDown]
 		public static void SendReport()
 		{
 			_driver.Quit();
