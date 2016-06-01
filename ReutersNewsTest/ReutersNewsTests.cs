@@ -36,6 +36,10 @@ namespace ReutersNewsTest
 		[Test]
 		public void MagicNews()
 		{
+			var prevPassed = CommonPassed;
+			CommonPassed = false;
+			Result += "MagicNews test was failed. Possibly there is a problem. Please check it ASAP!!!\n";
+
 			_driver.Navigate().GoToUrl(ConfigurationManager.AppSettings["MagicNewsUrl"]);
 			WaitForElement(_driver, By.CssSelector(".accordionitem.ng-scope"));
 			_driver.FindElement(By.CssSelector(".accordionitem.ng-scope")).Click();
@@ -48,13 +52,12 @@ namespace ReutersNewsTest
 
 			if (value.Equals("182 results"))
 			{
-				Result += "MagicNews test passed. Looks like everything works fine.\n";
+				CommonPassed = prevPassed;
+				Result = Result.Replace("MagicNews test was failed. Possibly there is a problem. Please check it ASAP!!!\n", "MagicNews test passed. Looks like everything works fine.\n");
 				Assert.IsTrue(true);
 			}
 			else
 			{
-				CommonPassed = false;
-				Result += "MagicNews test was failed. Possibly there is a problem. Please check it ASAP!!!\n";
 				Assert.IsTrue(false);
 			}
 		}
@@ -62,6 +65,10 @@ namespace ReutersNewsTest
 		[Test]
 		public void NewsMax()
 		{
+			var prevPassed = CommonPassed;
+			CommonPassed = false;
+			Result += "NewsMax test was failed. Possibly there is a problem. Please check it ASAP!!!\n";
+
 			_driver.Navigate().GoToUrl(ConfigurationManager.AppSettings["NewsMaxUrl"]);
 			WaitForElement(_driver, By.CssSelector(".accordionitem.V2.ng-scope"));
 			_driver.FindElement(By.CssSelector(".accordionitem.V2.ng-scope")).Click();
@@ -74,13 +81,12 @@ namespace ReutersNewsTest
 
 			if (value.Equals("182 results"))
 			{
-				Result += "NewsMax test passed. Looks like everything works fine.\n";
+				CommonPassed = prevPassed;
+				Result = Result.Replace("NewsMax test was failed. Possibly there is a problem. Please check it ASAP!!!\n", "NewsMax test passed. Looks like everything works fine.\n");
 				Assert.IsTrue(true);
 			}
 			else
 			{
-				CommonPassed = false;
-				Result += "NewsMax test was failed. Possibly there is a problem. Please check it ASAP!!!\n";
 				Assert.IsTrue(false);
 			}
 		}
@@ -123,7 +129,7 @@ namespace ReutersNewsTest
 			client.Send(mm);
 		}
 
-		public static void WaitForElement(IWebDriver driver, By by, int seconds = 30)
+		public static void WaitForElement(IWebDriver driver, By by, int seconds = 60)
 		{
 			var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
 			wait.Until(d => d.FindElement(by).Displayed);
